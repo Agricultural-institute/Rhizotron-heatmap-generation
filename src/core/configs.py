@@ -36,7 +36,7 @@ def get_points_path(experiment_name: str, image_name: Optional[str] = None) -> P
     return points_file
 
 
-def get_matx_path(experiment_name: str, image_name: Optional[str]) -> Path:
+def get_matx_path(experiment_name: str, image_name: Optional[str] = None) -> Path:
     if not image_name:
         matx_file = DATA_PROCESSED_DIR / experiment_name / "matx"
         os.makedirs(matx_file, exist_ok=True)
