@@ -26,6 +26,7 @@ def extract_points(experiment_name: str, idx_start: int = 0):
         logger.info(f"Processing image: {img_path.name}")
 
         img = Image.open(img_path)
+        logger.info(f"Select points on image: {img_path.name}")
         pixels = pixels_select_click(img)
         pixels.save_to_parquet(configs.get_points_path(experiment_name, img_path.stem))
 
@@ -67,6 +68,7 @@ def test_calculate_transformation_matrix(experiment_name: str):
         images_map[img_path.stem] = Image.open(img_path)
 
     image0 = images_map[list(images_map.keys())[0]]
+    logger.info(f"Select areas on image: {str(image0.filename)}")
     selected_areas_0 = pixels_select_lasso(image0)
 
     areas_map = {}
