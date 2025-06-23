@@ -24,13 +24,35 @@ def get_experiment_path(experiment_name: str) -> Path:
     return experiment_path
 
 
-def get_points_path(experiment_name: str, image_name: Optional[str] = None) -> Path:
+def get_points_calibration_path(
+    experiment_name: str, image_name: Optional[str] = None
+) -> Path:
     if not image_name:
-        points_file = DATA_PROCESSED_DIR / experiment_name / "points"
+        points_file = DATA_PROCESSED_DIR / experiment_name / "point_calib"
         os.makedirs(points_file, exist_ok=True)
     else:
         points_file = (
-            DATA_PROCESSED_DIR / experiment_name / "points" / f"{image_name}.parquet"
+            DATA_PROCESSED_DIR
+            / experiment_name
+            / "points_calib"
+            / f"{image_name}.parquet"
+        )
+        os.makedirs(points_file.parent, exist_ok=True)
+    return points_file
+
+
+def get_points_organism_path(
+    experiment_name: str, image_name: Optional[str] = None
+) -> Path:
+    if not image_name:
+        points_file = DATA_PROCESSED_DIR / experiment_name / "points_organism"
+        os.makedirs(points_file, exist_ok=True)
+    else:
+        points_file = (
+            DATA_PROCESSED_DIR
+            / experiment_name
+            / "points_organism"
+            / f"{image_name}.parquet"
         )
         os.makedirs(points_file.parent, exist_ok=True)
     return points_file
@@ -44,3 +66,9 @@ def get_matx_path(experiment_name: str, image_name: Optional[str] = None) -> Pat
         matx_file = DATA_PROCESSED_DIR / experiment_name / "matx" / f"{image_name}.npy"
         os.makedirs(matx_file.parent, exist_ok=True)
     return matx_file
+
+
+def get_results_path(experiment_name: str) -> Path:
+    results_file = DATA_PROCESSED_DIR / experiment_name / "results"
+    os.makedirs(results_file, exist_ok=True)
+    return results_file

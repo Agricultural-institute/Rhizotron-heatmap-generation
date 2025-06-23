@@ -11,6 +11,7 @@ from siapy.utils.plots import (
 
 from src.core import configs
 from src.core.logger import setup_logger
+from src.utils import save_pixel_map_to_csv
 
 app = typer.Typer()
 
@@ -18,22 +19,40 @@ logger = setup_logger()
 
 
 @app.command()
-def extract_points(experiment_name: str, idx_start: int = 0):
+def extract_points_calibration(experiment_name: str, idx_start: int = 0):
     experiment_path = configs.get_experiment_path(experiment_name)
     logger.info(f"Extracting points from experiment: {experiment_name}")
 
     for img_path in sorted(experiment_path.glob("*.jpg"))[idx_start:]:
         logger.info(f"Processing image: {img_path.name}")
-
         img = Image.open(img_path)
         logger.info(f"Select points on image: {img_path.name}")
         pixels = pixels_select_click(img)
-        pixels.save_to_parquet(configs.get_points_path(experiment_name, img_path.stem))
+        logger.info(f"Saving number of points: {len(pixels)}")
+        pixels.save_to_parquet(
+            configs.get_points_calibration_path(experiment_name, img_path.stem)
+        )
+
+
+@app.command()
+def extract_points_organism(experiment_name: str, idx_start: int = 0):
+    experiment_path = configs.get_experiment_path(experiment_name)
+    logger.info(f"Extracting points from experiment: {experiment_name}")
+
+    for img_path in sorted(experiment_path.glob("*.jpg"))[idx_start:]:
+        logger.info(f"Processing image: {img_path.name}")
+        img = Image.open(img_path)
+        logger.info(f"Select points on image: {img_path.name}")
+        pixels = pixels_select_click(img)
+        logger.info(f"Saving number of points: {len(pixels)}")
+        pixels.save_to_parquet(
+            configs.get_points_organism_path(experiment_name, img_path.stem)
+        )
 
 
 @app.command()
 def calculate_transformation_matrix(experiment_name: str):
-    points_path = configs.get_points_path(experiment_name)
+    points_path = configs.get_points_calibration_path(experiment_name)
     logger.info(f"Calculating transformation matrix for experiment: {experiment_name}")
 
     pixels_map = {}
@@ -89,6 +108,46 @@ def test_calculate_transformation_matrix(experiment_name: str):
             ],
             plot_interactive_buttons=False,
         )
+
+
+@app.command()
+def generate_results(experiment_name: str):
+    experiment_path = configs.get_experiment_path(experiment_name)
+    points_path = configs.get_points_organism_path(experiment_name)
+    matx_paths = configs.get_matx_path(experiment_name)
+    results_path = configs.get_results_path(experiment_name)
+    logger.info(f"Generating results for experiment: {experiment_name}")
+
+    image0 = Image.open(sorted(experiment_path.glob("*.jpg"))[0])
+
+    matx_map = {}
+    for matx_path in sorted(matx_paths.glob("*.npy")):
+        logger.info(f"Processing matrix file: {matx_path.name}")
+        matx = np.load(matx_path)
+        matx_map[matx_path.stem] = matx
+
+    pixels_map = {}
+    for points_path in sorted(points_path.glob("*.parquet")):
+        logger.info(f"Processing points file: {points_path.name}")
+        pixels = Pixels.load_from_parquet(points_path)
+        pixels_map[points_path.stem] = pixels
+
+    transformed_pixels_map = {}
+    for name in pixels_map.keys():
+        if name not in matx_map:
+            logger.warning(f"Matrix for {name} not found, skipping.")
+            continue
+
+        pixels = pixels_map[name]
+        matx = matx_map[name]
+        transformed_pixels = corregistrator.transform(pixels, matx)
+        normalized_pixels = transformed_pixels.to_numpy() / np.array(image0.size)  # Normalize to (0, 1) range
+        transformed_pixels_map[name] = normalized_pixels
+
+    save_pixel_map_to_csv(
+        transformed_pixels_map,
+        results_path / f"{experiment_name}_transformed_pixels.csv",
+    )
 
 
 if __name__ == "__main__":
