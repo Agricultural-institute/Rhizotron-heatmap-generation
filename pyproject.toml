@@ -5,5 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "loguru>=0.7.3",
     "siapy>=0.9.7",
+    "typer>=0.16.0",
 ]
