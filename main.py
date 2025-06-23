@@ -1,3 +1,4 @@
+import numpy as np
 import typer
 from PIL import Image
 from siapy.entities.pixels import Pixels
@@ -30,13 +31,18 @@ def calculate_transformation_matrix(experiment_name: str):
     points_path = configs.get_points_path(experiment_name)
     logger.info(f"Calculating transformation matrix for experiment: {experiment_name}")
 
-    pixels_list = []
+    pixels_map = {}
     for points_path in sorted(points_path.glob("*.parquet")):
         logger.info(f"Processing points file: {points_path.name}")
         pixels = Pixels.load_from_parquet(points_path)
-        pixels_list.append(pixels)
+        pixels_map[points_path.stem] = pixels
 
-    matx, _ = corregistrator.align(pixels_list[0], pixels_list[1], plot_progress=False)
+    name0 = list(pixels_map.keys())[0]
+    for image_name, pixels in pixels_map.items():
+        # align all to the first one
+        matx, _ = corregistrator.align(pixels_map[name0], pixels, plot_progress=False)
+        matx_path = configs.get_matx_path(experiment_name, image_name)
+        np.save(matx_path, matx)
 
 
 if __name__ == "__main__":
