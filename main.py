@@ -11,7 +11,7 @@ from siapy.utils.plots import (
 
 from src.core import configs
 from src.core.logger import setup_logger
-from src.utils import save_pixel_map_to_csv
+from src.misc.utils import save_pixel_map_to_csv
 
 app = typer.Typer()
 
