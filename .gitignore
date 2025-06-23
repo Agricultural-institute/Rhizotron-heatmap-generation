@@ -1,0 +1,15 @@
+__pycache__
+venv
+.venv
+.idea
+.ruff_cache
+.ipynb_checkpoints
+.mypy_cache
+.pdm-build
+.pytest_cache
+.pdm-python
+.coverage
+.vscode
+.history
+data/*
+!.gitkeep
