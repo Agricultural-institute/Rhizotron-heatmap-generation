@@ -35,7 +35,7 @@ def create_kde_heatmap_overlay(
     experiment_name: str,
     output_path: Path,
     figsize: tuple[int, int] = (14, 10),
-    resolution: int = 150,
+    resolution: int = 300,
     alpha: float = 0.6,
     cmap: str = "hot",
     show_plot: bool = True,
@@ -61,8 +61,9 @@ def create_kde_heatmap_overlay(
     # Create KDE-based heatmap
     fig, ax = plt.subplots(figsize=figsize)
 
-    # Display background image
-    ax.imshow(image, extent=(0, 1, 0, 1), aspect="auto", alpha=0.8)
+    # Display background image with correct coordinate system
+    # Use extent=(left, right, bottom, top) and origin='upper' to match image coordinates
+    ax.imshow(image, extent=(0, 1, 1, 0), aspect="auto", alpha=0.8, origin="upper")
 
     # Extract coordinates
     x = df["x_coordinate"].values
@@ -105,7 +106,9 @@ def create_kde_heatmap_overlay(
 
     # Customize plot
     ax.set_xlim(0, 1)
-    ax.set_ylim(0, 1)
+    ax.set_ylim(
+        1, 0
+    )  # Invert y-axis to match image coordinate system (top-left origin)
     ax.set_xlabel("X Coordinate (normalized)", fontsize=12)
     ax.set_ylabel("Y Coordinate (normalized)", fontsize=12)
     ax.set_title(
