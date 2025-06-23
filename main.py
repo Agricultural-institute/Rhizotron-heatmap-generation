@@ -51,7 +51,7 @@ def extract_points_organism(experiment_name: str, idx_start: int = 0):
 
 
 @app.command()
-def calculate_transformation_matrix(experiment_name: str):
+def calculate_transformation_matrix(experiment_name: str, alignment_mode: int = 0):
     points_path = configs.get_points_calibration_path(experiment_name)
     logger.info(f"Calculating transformation matrix for experiment: {experiment_name}")
 
@@ -64,13 +64,18 @@ def calculate_transformation_matrix(experiment_name: str):
     pixels0 = pixels_map[list(pixels_map.keys())[0]]
     for image_name, pixels in pixels_map.items():
         # align all to the first one
-        matx, _ = corregistrator.align(pixels, pixels0, plot_progress=False)
+        if alignment_mode == 0:
+            matx, _ = corregistrator.align(pixels0, pixels, plot_progress=False)
+        else:
+            matx, _ = corregistrator.align(pixels, pixels0, plot_progress=False)
+
         matx_path = configs.get_matx_path(experiment_name, image_name)
         np.save(matx_path, matx)
 
 
 @app.command()
 def test_calculate_transformation_matrix(experiment_name: str):
+    calculate_transformation_matrix(experiment_name, alignment_mode=1)
     experiment_path = configs.get_experiment_path(experiment_name)
     matx_paths = configs.get_matx_path(experiment_name)
     logger.info(f"Testing transformation matrix for experiment: {experiment_name}")
@@ -112,6 +117,7 @@ def test_calculate_transformation_matrix(experiment_name: str):
 
 @app.command()
 def generate_results(experiment_name: str):
+    calculate_transformation_matrix(experiment_name, alignment_mode=0)
     experiment_path = configs.get_experiment_path(experiment_name)
     points_path = configs.get_points_organism_path(experiment_name)
     matx_paths = configs.get_matx_path(experiment_name)
@@ -141,7 +147,9 @@ def generate_results(experiment_name: str):
         pixels = pixels_map[name]
         matx = matx_map[name]
         transformed_pixels = corregistrator.transform(pixels, matx)
-        normalized_pixels = transformed_pixels.to_numpy() / np.array(image0.size)  # Normalize to (0, 1) range
+        normalized_pixels = transformed_pixels.to_numpy() / np.array(
+            image0.size
+        )  # Normalize to (0, 1) range
         transformed_pixels_map[name] = normalized_pixels
 
     save_pixel_map_to_csv(
