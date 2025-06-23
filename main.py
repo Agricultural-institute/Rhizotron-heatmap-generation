@@ -11,7 +11,7 @@ from siapy.utils.plots import (
 
 from src.core import configs
 from src.core.logger import setup_logger
-from src.misc.utils import save_pixel_map_to_csv
+from src.misc.utils import create_kde_heatmap_overlay, save_pixel_map_to_csv
 
 app = typer.Typer()
 
@@ -150,11 +150,20 @@ def generate_results(experiment_name: str):
         normalized_pixels = transformed_pixels.to_numpy() / np.array(
             image0.size
         )  # Normalize to (0, 1) range
-        transformed_pixels_map[name] = normalized_pixels
+        transformed_pixels_map[name] = np.clip(normalized_pixels, 0, 1)
 
-    save_pixel_map_to_csv(
+    df = save_pixel_map_to_csv(
         transformed_pixels_map,
         results_path / f"{experiment_name}_transformed_pixels.csv",
+    )
+
+    logger.info("Creating heatmap visualization...")
+    create_kde_heatmap_overlay(
+        df=df,
+        image=image0,
+        experiment_name=experiment_name,
+        output_path=results_path / f"{experiment_name}_heatmap.png",
+        show_plot=False,  # Don't show plot in batch processing
     )
 
 
