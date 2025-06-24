@@ -35,7 +35,7 @@ def extract_points_calibration(experiment_name: str, idx_start: int = 0):
 
 
 @app.command()
-def extract_points_organism(experiment_name: str, idx_start: int = 0):
+def extract_points_organism(experiment_name: str, idx_start: int = 1):
     experiment_path = configs.get_experiment_path(experiment_name)
     logger.info(f"Extracting points from experiment: {experiment_name}")
 

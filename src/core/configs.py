@@ -28,7 +28,7 @@ def get_points_calibration_path(
     experiment_name: str, image_name: Optional[str] = None
 ) -> Path:
     if not image_name:
-        points_file = DATA_PROCESSED_DIR / experiment_name / "point_calib"
+        points_file = DATA_PROCESSED_DIR / experiment_name / "points_calib"
         os.makedirs(points_file, exist_ok=True)
     else:
         points_file = (

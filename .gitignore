@@ -12,4 +12,5 @@ venv
 .vscode
 .history
 data/*
+!data/3-Octanone-A.lineatus/
 !.gitkeep
