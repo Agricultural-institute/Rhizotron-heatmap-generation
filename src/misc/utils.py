@@ -119,7 +119,7 @@ def create_kde_heatmap_overlay(
 
     # Add legend for experiments
     if len(exp_names) > 1:
-        ax.legend(bbox_to_anchor=(1.05, 1), loc="upper left", fontsize=10)
+        ax.legend(bbox_to_anchor=(1.3, 1), loc="upper left", fontsize=10)
 
     # Add colorbar for density
     cbar = plt.colorbar(contour, ax=ax, shrink=0.8, aspect=20)
