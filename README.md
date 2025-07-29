@@ -11,7 +11,7 @@ This tool is particularly useful for:
 -   Spatial density analysis of organisms or features in experimental setups
 -   Multi-timepoint image registration and analysis
 
-<img src="doc/example-image.png" alt="Example heatmap visualization" width="600">
+<img src="doc/example-image.jpg" alt="Example heatmap visualization" width="600">
 
 _Example heatmap showing spatial distribution with KDE-based density visualization_
 
