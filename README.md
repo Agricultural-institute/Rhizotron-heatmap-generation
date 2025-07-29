@@ -6,10 +6,13 @@ This project enables spatial analysis by registering and merging location data f
 
 This tool is particularly useful for:
 
-- Root growth analysis in rhizotron studies
-- Temporal tracking of biological specimens across multiple imaging sessions
-- Spatial density analysis of organisms or features in experimental setups
-- Multi-timepoint image registration and analysis
+-   Root growth analysis in rhizotron studies
+-   Temporal tracking of biological specimens across multiple imaging sessions
+-   Spatial density analysis of organisms or features in experimental setups
+-   Multi-timepoint image registration and analysis
+
+![Example heatmap visualization](doc/example-image.png)
+_Example heatmap showing spatial distribution with KDE-based density visualization_
 
 ## Installation
 
@@ -27,9 +30,9 @@ This guide provides step-by-step instructions for the complete workflow from ima
 
 ### Prerequisites
 
-- Images should be from the same experimental setup (rhizotron) captured at different time points
-- All images should have similar camera position
-- Reference image should be named to appear first alphabetically (e.g., using `_` prefix)
+-   Images should be from the same experimental setup (rhizotron) captured at different time points
+-   All images should have similar camera position
+-   Reference image should be named to appear first alphabetically (e.g., using `_` prefix)
 
 ### Example Dataset
 
@@ -67,19 +70,19 @@ uv run main.py extract-points-calibration "3-Octanone-A.lineatus"
 
 **Calibration Point Selection Guidelines:**
 
-- Select **minimum 6 points** per image
-- Choose the **same points in the same order** across all images
-- Recommended points for rhizotron studies:
-  1. Seed/root crown positions (2 points)
-  2. Rhizotron corners (4+ points)
-- Points should be easily identifiable in all images
-- More points = better registration accuracy
+-   Select **minimum 6 points** per image
+-   Choose the **same points in the same order** across all images
+-   Recommended points for rhizotron studies:
+    1. Seed/root crown positions (2 points)
+    2. Rhizotron corners (4+ points)
+-   Points should be easily identifiable in all images
+-   More points = better registration accuracy
 
 **Interactive Process:**
 
-- Click on each calibration point in the displayed image
-- Follow the same order for all images
-- Points are automatically saved when you press ENTER
+-   Click on each calibration point in the displayed image
+-   Follow the same order for all images
+-   Points are automatically saved when you press ENTER
 
 ---
 
@@ -96,10 +99,10 @@ uv run main.py extract-points-organism "3-Octanone-A.lineatus"
 
 **Feature Selection Guidelines:**
 
-- Select all organisms/features you want to include in the analysis
-- These points will be transformed to the reference image space
-- Click on each organism position in every image
-- The number of points can vary between images
+-   Select all organisms/features you want to include in the analysis
+-   These points will be transformed to the reference image space
+-   Click on each organism position in every image
+-   The number of points can vary between images
 
 ---
 
@@ -129,17 +132,17 @@ uv run main.py generate-results "3-Octanone-A.lineatus"
 
 **CSV Structure:**
 
-- `exp_name`: Experiment name
-- `point_index`: Sequential point number
-- `x_coordinate`: Normalized X position (0-1)
-- `y_coordinate`: Normalized Y position (0-1)
+-   `exp_name`: Experiment name
+-   `point_index`: Sequential point number
+-   `x_coordinate`: Normalized X position (0-1)
+-   `y_coordinate`: Normalized Y position (0-1)
 
 **Heatmap Features:**
 
-- KDE-based smooth density visualization
-- Reference image as background
-- Color-coded experimental replicates
-- High-resolution (300 DPI) publication-ready output
+-   KDE-based smooth density visualization
+-   Reference image as background
+-   Color-coded experimental replicates
+-   High-resolution (300 DPI) publication-ready output
 
 ---
 
